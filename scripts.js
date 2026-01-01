@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function setTheme(theme) {
         document.body.classList.toggle('dark-theme', theme === 'dark');
         if (themeToggle) {
-            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            const icon = themeToggle.querySelector('i');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
         }
         localStorage.setItem('theme', theme);
     }
@@ -491,71 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCarousel();
     }
 
-    // Auto-scroll gallery
-    const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
-        let scrollAmount = 0;
-        const scrollSpeed = 10; // pixels per frame (smoother)
-        let scrollDirection = 1; // 1 for right, -1 for left
-        let isScrolling = true;
-        let animationFrameId;
-        let userInteracting = false;
-
-        function autoScroll() {
-            if (!isScrolling || !galleryGrid || userInteracting) {
-                if (animationFrameId) {
-                    animationFrameId = requestAnimationFrame(autoScroll);
-                }
-                return;
-            }
-
-            // Auto-scroll certificates
-            const certificatesGrid = document.querySelector('.certificates-grid');
-            if (certificatesGrid) {
-                let certScroll = 0;
-                const certSpeed = 0.5;
-                let certDir = 1;
-                let certAnimating = false;
-                let certUserInteracting = false;
-                let certRafId;
-
-                function certTick() {
-                    if (!certificatesGrid) return;
-                    const max = certificatesGrid.scrollWidth - certificatesGrid.clientWidth;
-                    if (certUserInteracting || max <= 0) {
-                        certRafId = requestAnimationFrame(certTick);
-                        return;
-                    }
-                    if (certScroll >= max) certDir = -1;
-                    else if (certScroll <= 0) certDir = 1;
-                    certScroll += certSpeed * certDir;
-                    certificatesGrid.scrollLeft = certScroll;
-                    certRafId = requestAnimationFrame(certTick);
-                }
-
-                // Sync internal scroll position with user actions
-                let certScrollTimeout;
-                certificatesGrid.addEventListener('scroll', () => {
-                    certUserInteracting = true;
-                    clearTimeout(certScrollTimeout);
-                    certScroll = certificatesGrid.scrollLeft;
-                    certScrollTimeout = setTimeout(() => { certUserInteracting = false; }, 1500);
-                });
-
-                certificatesGrid.addEventListener('mouseenter', () => { certUserInteracting = true; });
-                certificatesGrid.addEventListener('mouseleave', () => { certUserInteracting = false; });
-
-                if (!certAnimating) {
-                    certAnimating = true;
-                    setTimeout(() => { certTick(); }, 800);
-                }
-
-                window.addEventListener('beforeunload', () => {
-                    if (certRafId) cancelAnimationFrame(certRafId);
-                });
-            }
-
-             // Stars background animation
+    // Stars background animation
     const starsCanvas = document.getElementById('stars-canvas');
     if (starsCanvas) {
         const ctx = starsCanvas.getContext('2d');
@@ -657,25 +596,72 @@ document.addEventListener('DOMContentLoaded', () => {
         start();
     }
 
-                // Listen for events: resize, theme change
-                let resizeTimeout;
-                window.addEventListener('resize', () => {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => {
-                        resizeCanvas();
-                        seedStars();
-                        drawFrame();
-                    }, 150);
+    // Auto-scroll gallery
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+        let scrollAmount = 0;
+        const scrollSpeed = 10; // pixels per frame (smoother)
+        let scrollDirection = 1; // 1 for right, -1 for left
+        let isScrolling = true;
+        let animationFrameId;
+        let userInteracting = false;
+
+        function autoScroll() {
+            if (!isScrolling || !galleryGrid || userInteracting) {
+                if (animationFrameId) {
+                    animationFrameId = requestAnimationFrame(autoScroll);
+                }
+                return;
+            }
+
+            // Auto-scroll certificates
+            const certificatesGrid = document.querySelector('.certificates-grid');
+            if (certificatesGrid) {
+                let certScroll = 0;
+                const certSpeed = 0.5;
+                let certDir = 1;
+                let certAnimating = false;
+                let certUserInteracting = false;
+                let certRafId;
+
+                function certTick() {
+                    if (!certificatesGrid) return;
+                    const max = certificatesGrid.scrollWidth - certificatesGrid.clientWidth;
+                    if (certUserInteracting || max <= 0) {
+                        certRafId = requestAnimationFrame(certTick);
+                        return;
+                    }
+                    if (certScroll >= max) certDir = -1;
+                    else if (certScroll <= 0) certDir = 1;
+                    certScroll += certSpeed * certDir;
+                    certificatesGrid.scrollLeft = certScroll;
+                    certRafId = requestAnimationFrame(certTick);
+                }
+
+                // Sync internal scroll position with user actions
+                let certScrollTimeout;
+                certificatesGrid.addEventListener('scroll', () => {
+                    certUserInteracting = true;
+                    clearTimeout(certScrollTimeout);
+                    certScroll = certificatesGrid.scrollLeft;
+                    certScrollTimeout = setTimeout(() => { certUserInteracting = false; }, 1500);
                 });
 
-                // Theme change support
-                document.addEventListener('toggle-theme', () => {
-                    drawFrame();
+                certificatesGrid.addEventListener('mouseenter', () => { certUserInteracting = true; });
+                certificatesGrid.addEventListener('mouseleave', () => { certUserInteracting = false; });
+
+                if (!certAnimating) {
+                    certAnimating = true;
+                    setTimeout(() => { certTick(); }, 800);
+                }
+
+                window.addEventListener('beforeunload', () => {
+                    if (certRafId) cancelAnimationFrame(certRafId);
                 });
-                // Optionally, track class changes on body if toggling dark mode directly
-                const bodyObserver = new MutationObserver(() => drawFrame());
-                bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
             }
+
+
+
             const maxScroll = galleryGrid.scrollWidth - galleryGrid.clientWidth;
             
             // Only auto-scroll if there's content to scroll
@@ -728,4 +714,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+}
 );
