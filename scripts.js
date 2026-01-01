@@ -34,22 +34,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Progress bars with Intersection Observer
+    // Animate skills on scroll
+    const skillSection = document.querySelector('.skills');
     const progressBars = document.querySelectorAll('.progress-bar');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const percent = entry.target.getAttribute('data-percent');
-                entry.target.style.setProperty('--progress', percent + '%');
-                observer.unobserve(entry.target); // Stop observing once animated
-            }
-        });
-    }, {
-        threshold: 0.5,
-        rootMargin: '0px'
+    let animated = false;
+
+    function animateSkills() {
+        if (!skillSection) return;
+        const sectionPos = skillSection.getBoundingClientRect().top;
+        const screenPos = window.innerHeight / 1.3;
+
+        if (sectionPos < screenPos && !animated) {
+            progressBars.forEach(bar => {
+                const percent = bar.getAttribute('data-percent');
+                bar.style.width = percent + '%';
+            });
+            animated = true;
+            window.removeEventListener('scroll', animateSkills);
+        }
+    }
+
+    if (skillSection) {
+        window.addEventListener('scroll', animateSkills);
+        animateSkills(); // Check on load
+    }
+
+    // Reload animation on hover/click
+    const skillItems = document.querySelectorAll('.skill');
+
+    skillItems.forEach(skill => {
+        const bar = skill.querySelector('.progress-bar');
+        if (!bar) return;
+        const percent = bar.getAttribute('data-percent');
+
+        const reloadAnimation = () => {
+            bar.style.width = '0%';
+            bar.style.transition = 'none';
+
+            setTimeout(() => {
+                bar.style.transition = 'width 1s cubic-bezier(0.1, 0.5, 0.5, 1)';
+                bar.style.width = percent + '%';
+            }, 50);
+        };
+
+        skill.addEventListener('mouseenter', reloadAnimation);
+        skill.addEventListener('click', reloadAnimation);
     });
 
-    progressBars.forEach(bar => observer.observe(bar));
 
     // Form Validation and Handling
     const form = document.getElementById('contact-form');
