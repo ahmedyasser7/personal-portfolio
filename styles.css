@@ -2136,6 +2136,25 @@ button {
     position: relative;
 }
 
+.three-stage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.three-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-three-stage {
+    height: 270px;
+    margin: 1rem 0 2rem;
+    border-radius: 18px;
+    background: radial-gradient(ellipse at center, rgba(28, 157, 142, 0.12), transparent 68%);
+}
+
 #contact .section-inner {
     max-width: 1200px;
     margin: 0 auto;
@@ -2213,6 +2232,11 @@ button {
 @media (max-width: 600px) {
     .gallery-grid {
         grid-template-columns: 1fr;
+    }
+
+    .gallery-three-stage {
+        height: 210px;
+        margin: 0.75rem 0 1.5rem;
     }
 }
 
@@ -2333,6 +2357,7 @@ button {
     background: linear-gradient(135deg, rgba(106, 13, 173, 0.08) 0%, rgba(63, 142, 252, 0.04) 100%);
     padding: 4rem 10%;
     position: relative;
+    overflow: hidden;
 }
 
 .dark-theme #certificates {
@@ -2347,6 +2372,17 @@ button {
 
 .certificates-content {
     animation: slideInUp 0.8s ease-out;
+}
+
+.certificate-three-stage {
+    height: 150px;
+    max-width: 620px;
+    margin: 0 auto 1.25rem;
+    background: radial-gradient(ellipse at center, rgba(235, 174, 62, 0.16), transparent 66%);
+}
+
+.certificate-item:first-child {
+    border-top: 3px solid #d9a441;
 }
 
 
@@ -2549,6 +2585,11 @@ button {
 
     .certificate-item img {
         height: 140px;
+    }
+
+    .certificate-three-stage {
+        height: 120px;
+        margin-bottom: 1rem;
     }
 
     .certificate-info {
